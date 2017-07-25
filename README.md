@@ -5,7 +5,7 @@ This role allows working with https://github.com/hjdr4/docker-volume-glusterfs G
 ## Usage
  Clone this project into your Ansible roles directory.
  ```
- git clone https://github.com/hjdr4/ansible-glusterrestd.git` roles/glusterrestd
+ git clone https://github.com/hjdr4/ansible-glusterrestd.git roles/glusterrestd
  ```
  
  In your Gluster servers playbook, include the role:
