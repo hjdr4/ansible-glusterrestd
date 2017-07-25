@@ -1,0 +1,12 @@
+[Unit]
+Description=Glusterfs volume driver for Docker
+After=remote-network-online.target
+Before=docker.service
+After=glusterd.service
+
+[Service]
+ExecStart=/usr/bin/glusterrestd
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

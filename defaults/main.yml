@@ -1,0 +1,2 @@
+glusterrestd_root_user: docker
+glusterrestd_root_password: docker

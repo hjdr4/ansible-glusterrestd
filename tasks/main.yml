@@ -1,0 +1,49 @@
+- name: copy installation script for Glusterrestd
+  copy:
+    src: "{{role_path}}/files/install.sh"
+    dest: /tmp/install_glusterd.sh
+    mode: 0755
+
+- name: install gunicorn separately because it creates errors...
+  pip:
+    name: gunicorn
+    state: installed
+  failed_when: false
+  
+- name: install Glusterrestd
+  shell: /tmp/install_glusterd.sh
+  changed_when: false
+  failed_when: false
+
+- name: link gunicorn
+  file:
+    src: /usr/local/bin/gunicorn
+    dest: /usr/bin/gunicorn
+    state: link
+
+- name: install service template
+  template:
+    src: "{{role_path}}/templates/glusterrestd.service.j2"
+    dest: /etc/systemd/system/glusterrestd.service
+  
+- name: enable/start service
+  service:
+    name: glusterrestd
+    state: started
+    enabled: yes
+
+- name:  test docker user
+  shell: glusterrest show users |grep -i {{glusterrestd_root_user}}
+  failed_when: false
+  changed_when: false
+  register: glusterrest_user_docker
+
+- name: create root user
+  shell: glusterrest useradd {{glusterrestd_root_user}} -g glusterroot -p {{glusterrestd_root_password}}
+  when: glusterrest_user_docker.rc!=0
+
+- name: create bricks dir
+  file:
+    state: directory
+    path: /var/lib/gluster/bricks
+    recurse: yes
